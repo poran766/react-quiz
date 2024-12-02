@@ -1,7 +1,7 @@
 import { getDatabase, ref, set } from "firebase/database";
 import _ from "lodash";
 import { useEffect, useReducer, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import useQuestions from "../../hooks/useQuestions";
 import Answers from "../Answers";
@@ -35,15 +35,28 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+  const { videoTitle } = state;
+  // console.log(videoTitle);
 
   const [qna, dispatch] = useReducer(reducer, initialState);
 
+  // useEffect(() => {
+  //   dispatch({
+  //     type: "questions",
+  //     value: questions,
+  //   });
+  // }, [questions]);
+
   useEffect(() => {
-    dispatch({
-      type: "questions",
-      value: questions,
-    });
-  }, [questions]);
+    if (questions.length > 0 && (!qna || questions.length !== qna.length)) {
+      dispatch({
+        type: "questions",
+        value: questions,
+      });
+    }
+  }, [questions, qna]);
 
   function handleAnswerChange(e, index) {
     dispatch({
@@ -65,7 +78,7 @@ export default function Quiz() {
 
   function prevQuestion() {
     if (currentQuestion >= 1 && currentQuestion <= questions.length) {
-      setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+      setCurrentQuestion((prevQuestion) => prevQuestion - 1);
     }
   }
 
@@ -96,9 +109,9 @@ export default function Quiz() {
           <h1>{qna[currentQuestion].title}</h1>
           <h4>Question can have multiple answers</h4>
 
-          <Answers options={qna[currentQuestion].options} handleChange={handleAnswerChange} />
+          <Answers input options={qna[currentQuestion].options} handleChange={handleAnswerChange} />
           <ProgressBar next={nextQuestion} prev={prevQuestion} progress={percentage} result={result} />
-          <MiniPlayer />
+          <MiniPlayer id={id} title={videoTitle} />
         </>
       )}
     </>

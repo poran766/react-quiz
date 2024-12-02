@@ -19,15 +19,16 @@ export default function Videos() {
           }}
           loader={<h4>Loading...Please Wait</h4>}
         >
-          {videos.map((video, index) =>
-            video.noq > 0 ? (
-              <Link to={`/quiz/${video.youtubeID}`} key={`${video.youtubeID}-${index}`}>
+          {videos.map((video, index) => {
+            return video.noq > 0 ? (
+              // <Link to={`/quiz/${video.youtubeID}`} key={`${video.youtubeID}-${index}`}>
+              <Link to={`/quiz/${video.youtubeID}`} state={{ videoTitle: video.title }} key={`${video.youtubeID}-${index}`}>
                 <Video title={video.title} id={video.youtubeID} noq={video.noq} />
               </Link>
             ) : (
               <Video title={video.title} id={video.youtubeID} noq={video.noq} key={`${video.youtubeID}-${index}`} />
-            )
-          )}
+            );
+          })}
         </InfiniteScroll>
       )}
       {!loading && videos.length === 0 && <div> No Data Found </div>}

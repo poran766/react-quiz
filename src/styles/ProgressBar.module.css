@@ -89,7 +89,7 @@
 .tooltip {
   position: absolute;
   top: -70px;
-  left: calc(70% - 65px);
+  /* left: calc(70% - 65px); it passes dynemically from the tooltip*/
   width: 130px;
   background-color: var(--fontPrimary);
   color: #fff;
